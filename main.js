@@ -11,15 +11,16 @@ const pages = getNumberOfPages(people);
 const webpage = document.getElementsByClassName('page'); 
 
 
-const buttons = document.createElment('div');
+const buttons = document.createElement('div');
 buttons.className = 'pagination'; 
 const button_list = document.createElement('ul'); 
 buttons.appendChild(button_list); 
 for(let i=0; i<pages; i+=1){
     let button = document.createElement('li'); 
     let atag = document.createElement('a'); 
-    button.appendChild(atag); 
+    
     atag.textContent = i; 
+    button.appendChild(atag); 
     button_list.appendChild(button); 
     
 }
