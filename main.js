@@ -17,6 +17,9 @@
  
 //                       if fewer than 10 items, just use 1 pagination link and display all info 
 //                       if more than 10 items, just use more pagination links and display all info 
+//                        if statement 
+//                        no result ---> print the message 
+//                        results ---> create buttons ---> use showeachpageinfo to display information 
 
 
 const people = document.getElementsByClassName("student-item"); 
@@ -45,16 +48,18 @@ const page_header = document.getElementsByClassName("page-header");
 
 //webpage[0].appendChild(buttons); 
 
-const all_buttons = createButtons(webpage,"pagination").querySelectorAll('.pagination li'); 
+//create the pagination links
+const all_buttons = createButtons(pages,"pagination", webpage[0]).querySelectorAll('.pagination li'); 
 showFirstPage(people); 
 
-
+//
 for(let i = 0; i < all_buttons.length; i+=1 ){
     all_buttons[i].addEventListener('click', ()=>{
         showEachPageInfo(all_buttons[i].textContent, people); 
     }); 
 }
 
+//create a search button 
 const search_button = document.createElement('div');
 search_button.className = "student-search"; 
 const input = document.createElement('input'); 
@@ -65,17 +70,39 @@ search_button.appendChild(input);
 search_button.appendChild(button_for_search);
 page_header[0].appendChild(search_button); 
 
-
-button_for_search.addEventListener('click', (input.textContent)=>{
+let people_list = document.createElement('ul'); 
+button_for_search.addEventListener('click', ()=>{
     for(let i=0; i < people.length; i+=1){
         people[i].style.display = 'none'; 
         let student_detail = people[i].querySelector('.student-details'); 
         let name = student_detail.querySelector('h3'); 
         let email = student_detail.querySelector('.email'); 
         
-        if(name.includes(input.textContent) || email.includes(input.textContent)){
+        if(name.textContent.toUpperCase.includes(input.textContent.toUpperCase) || email.textContent.toUpperCase.includes(input.textContent.toUpperCase)){
             people[i].style.display = 'block'; 
+            people_list.appendChild(people[i]); 
         }
+    }
+    
+    if(people_list.length === 0){
+        let statement_cover = document.createElement('div'); 
+        let statement = document.createElement('h3'); 
+        statement.textContent = "Sorry we cannot find anything in our record that matches your keyword search";
+        statement_cover.appendChild(statement); 
+        webpage.insertBefore(statement_cover, people); 
+        all_buttons.hide(); 
+        
+    } else {
+        
+        all_buttons.hide(); 
+        let pagination_number = getNumberOfPages(people_list); 
+        let search_result_buttons = createButtons(pagination_number,"pagination",webpage[0]); 
+        for(let i = 0; i < search_result_buttons.length; i+=1 ){
+            search_result_buttons[i].addEventListener('click', ()=>{
+            showEachPageInfo(all_buttons[i].textContent, people_list); 
+    }); 
+
+    }
     }
     
 }); 
@@ -103,13 +130,13 @@ function showFirstPage(list){
     }
 }
 
-function createButtons(page, className){
+function createButtons(page, className, location){
    
     let buttons = document.createElement('div');
     buttons.className = className; 
     let button_list = document.createElement('ul');
  
-    for(let i=0; i<pages; i+=1){
+    for(let i=0; i<page; i+=1){
         let button = document.createElement('li'); 
         let atag = document.createElement('a'); 
 
@@ -119,7 +146,7 @@ function createButtons(page, className){
 
     }
     buttons.appendChild(button_list); 
-    page[0].appendChild(buttons); 
+    location.appendChild(buttons);
     return button_list; 
 }
 
