@@ -9,6 +9,14 @@
 //      (3) give instructions by combining the page number and the function in (1)
 // b. add people to the webpage by JavaScript 
 //     locate the object(the place to add and the object added) --> order the one object to add another
+// c. add functionality to search button 
+//      Let the user write the keyword --> try to let the keyword match info in the webpage 
+//               Two situations to consider: 
+//                       (1) No result match --> print the message to the webpage 
+//                       (2) results match --> calculate number of items 
+ 
+//                       if fewer than 10 items, just use 1 pagination link and display all info 
+//                       if more than 10 items, just use more pagination links and display all info 
 
 
 const people = document.getElementsByClassName("student-item"); 
@@ -37,14 +45,13 @@ const page_header = document.getElementsByClassName("page-header");
 
 //webpage[0].appendChild(buttons); 
 
-createButtons(webpage,"pagination"); 
+const all_buttons = createButtons(webpage,"pagination").querySelectorAll('.pagination li'); 
 showFirstPage(people); 
 
-const all_buttons = createButtons(webpage, "pagination").querySelectorAll('li'); 
 
 for(let i = 0; i < all_buttons.length; i+=1 ){
     all_buttons[i].addEventListener('click', ()=>{
-        showEachPageInfo(pages, people); 
+        showEachPageInfo(all_buttons[i].textContent, people); 
     }); 
 }
 
@@ -56,7 +63,23 @@ const button_for_search = document.createElement('button');
 button_for_search.textContent = "Search"; 
 search_button.appendChild(input); 
 search_button.appendChild(button_for_search);
-page_header.appendChild(search_button); 
+page_header[0].appendChild(search_button); 
+
+
+button_for_search.addEventListener('click', (input.textContent)=>{
+    for(let i=0; i < people.length; i+=1){
+        people[i].style.display = 'none'; 
+        let student_detail = people[i].querySelector('.student-details'); 
+        let name = student_detail.querySelector('h3'); 
+        let email = student_detail.querySelector('.email'); 
+        
+        if(name.includes(input.textContent) || email.includes(input.textContent)){
+            people[i].style.display = 'block'; 
+        }
+    }
+    
+}); 
+
 
 
 
@@ -123,6 +146,8 @@ function hideAll(list){
         list[i].style.display = 'none'; 
     }
 }
+
+
 
 
 
