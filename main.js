@@ -70,36 +70,41 @@ search_button.appendChild(input);
 search_button.appendChild(button_for_search);
 page_header[0].appendChild(search_button); 
 
+let value = document.querySelector('.student-search input').value; 
 let people_list = document.createElement('ul'); 
 button_for_search.addEventListener('click', ()=>{
+    hideAll(people); 
+    
     for(let i=0; i < people.length; i+=1){
-        people[i].style.display = 'none'; 
+        
         let student_detail = people[i].querySelector('.student-details'); 
         let name = student_detail.querySelector('h3'); 
         let email = student_detail.querySelector('.email'); 
         
-        if(name.textContent.toUpperCase.includes(input.textContent.toUpperCase) || email.textContent.toUpperCase.includes(input.textContent.toUpperCase)){
+        if(name.textContent.includes(value.toLowerCase) || email.textContent.includes(value.toLowerCase)){
             people[i].style.display = 'block'; 
             people_list.appendChild(people[i]); 
         }
     }
     
     if(people_list.length === 0){
+        hideAll(all_buttons); 
         let statement_cover = document.createElement('div'); 
-        let statement = document.createElement('h3'); 
-        statement.textContent = "Sorry we cannot find anything in our record that matches your keyword search";
+        let statement = document.createElement('p'); 
+        statement.value = "Sorry we cannot find anything in our record that matches your keyword search";
         statement_cover.appendChild(statement); 
         webpage.insertBefore(statement_cover, people); 
-        all_buttons.hide(); 
+        statement.style.display = 'block'; 
+    
         
     } else {
         
-        all_buttons.hide(); 
+        hideAll(all_buttons); 
         let pagination_number = getNumberOfPages(people_list); 
         let search_result_buttons = createButtons(pagination_number,"pagination",webpage[0]); 
         for(let i = 0; i < search_result_buttons.length; i+=1 ){
             search_result_buttons[i].addEventListener('click', ()=>{
-            showEachPageInfo(all_buttons[i].textContent, people_list); 
+            showEachPageInfo(search_result_buttons[i].value, people_list); 
     }); 
 
     }
